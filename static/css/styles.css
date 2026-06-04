@@ -1,9 +1,9 @@
-/* Fondo general un poco más sofisticado */
+/* Fondo general */
 body {
     background-color: #f4f7f6 !important;
 }
 
-/* Efecto hover elegante en las tarjetas de resumen */
+/* Efecto hover */
 .card {
     border: none;
     border-radius: 12px;
@@ -15,7 +15,7 @@ body {
     box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
 }
 
-/* Encabezados de tabla más limpios */
+/* Encabezados de tabla */
 .table th {
     text-transform: uppercase;
     font-size: 0.85rem;
@@ -23,13 +23,13 @@ body {
     color: #6c757d;
 }
 
-/* Botones más redondeados y modernos */
+/* Botones */
 .btn {
     border-radius: 8px;
     font-weight: 500;
 }
 
-/* Ajuste sutil a la barra de navegación */
+/* Barra de navegación */
 .navbar {
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
