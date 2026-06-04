@@ -1,25 +1,26 @@
 # Plataforma de Catálogo de Productos
 
 ## Descripción y Objetivo
-Plataforma web para la administración de un catálogo de productos. El sistema permite la gestión integral del inventario, incorporando autenticación segura de usuarios mediante JWT, un panel administrativo interactivo y la generación de reportes exportables.
+Plataforma web Full Stack para la administración de un catálogo de productos. El sistema permite la gestión integral del inventario, incorporando autenticación segura mediante JSON Web Tokens (JWT), control de accesos basado en roles (RBAC), vistas modulares y la generación de reportes exportables.
 
 ## Funcionalidades Implementadas
-* **Autenticación y Seguridad:** Inicio de sesión protegido con JSON Web Tokens (JWT).
-* **Dashboard Administrativo:** Panel interactivo estilizado con Bootstrap 5, con indicadores del sistema en tiempo real.
-* **CRUD de Productos:** Módulo completo (Crear, Leer, Actualizar, Eliminar) consumiendo una API REST de forma asíncrona mediante Fetch API.
-* **Reportes:** Generación y descarga de reporte de inventario en formato CSV.
+* **Autenticación y Seguridad:** Inicio de sesión protegido con JWT. Protección de credenciales y llaves secretas mediante variables de entorno (`.env`).
+* **Control de Roles (RBAC):** Sistema de permisos dinámico. Los administradores tienen acceso total al CRUD de usuarios e inventario, mientras que los empleados regulares cuentan con permisos de solo lectura en secciones críticas.
+* **Arquitectura Modular:** Interfaz de usuario segmentada en vistas independientes (Dashboard, Productos y Usuarios) para una mejor experiencia de navegación y escalabilidad del código.
+* **CRUD Asíncrono:** Operaciones de creación, lectura, actualización y eliminación consumiendo la API REST de forma asíncrona mediante Fetch API (Vanilla JavaScript).
+* **Reportes:** Generación y descarga de reporte de inventario en formato CSV desde el backend.
 
 ## Arquitectura y Decisiones de Diseño
-* **Gestión de Usuarios centralizada:** Por motivos de seguridad y optimización, se tomó la decisión arquitectónica de mantener la creación y gestión de credenciales operativas exclusivamente a través del panel nativo de Django (`/admin/`). Al tratarse de una plataforma administrativa, esto centraliza el control de accesos en una herramienta robusta y previene vulnerabilidades.
-* **Separación de responsabilidades:** El Dashboard (`/`) está diseñado estrictamente para la operación diaria del negocio (gestión del inventario y reportes), dejando las configuraciones críticas del sistema al administrador nativo.
+* **Seguridad API y UI:** El backend bloquea las peticiones no autorizadas mediante las clases `IsAdminUser` e `IsAuthenticated` de Django REST Framework. En el frontend, el token JWT es decodificado para adaptar la interfaz visual (ocultando botones de eliminación/creación) dependiendo del rol del usuario, evitando accesos indebidos.
+* **Diseño UI/UX:** Se implementó Bootstrap 5 junto con el tema Bootswatch (Zephyr) y Bootstrap Icons para lograr una interfaz moderna, limpia y responsiva que se aleja de las plantillas genéricas.
 
 ## Tecnologías Utilizadas
 * **Backend:** Python, Django y Django REST Framework
 * **Base de Datos:** PostgreSQL
-* **Frontend:** HTML, CSS, JavaScript Vanilla y Bootswatch (Zephyr)
-* **Seguridad:** djangorestframework-simplejwt
+* **Frontend:** HTML5, CSS3, JavaScript Vanilla y Bootswatch
+* **Seguridad y Utilidades:** `djangorestframework-simplejwt`, `python-dotenv`
 
-## Pasos de Instalación y Deploy
+## Pasos de Instalación y Despliegue Local
 
 Sigue estas instrucciones paso a paso para levantar el proyecto en un entorno local:
 

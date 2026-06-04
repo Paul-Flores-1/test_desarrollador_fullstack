@@ -1,19 +1,30 @@
 import csv
 from django.http import HttpResponse
+from django.shortcuts import render  
 from django.utils import timezone
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from .models import Producto, Usuario
 from .serializers import ProductoSerializer, UsuarioSerializer
 
+
 class UsuarioViewSet(viewsets.ModelViewSet):
     """
-    CRUD completo para la administración de usuarios.
-    Protegido por JWT.
+    CRUD para usuarios.
+    Lectura: Todos los usuarios autenticados.
+    Escritura/Eliminación: Solo administradores.
     """
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
-    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        # Si la acción es 'list' (ver todos) o 'retrieve' (ver uno solo)
+        if self.action in ['list', 'retrieve']:
+            permission_classes = [IsAuthenticated]
+        # Para crear, actualizar o eliminar
+        else:
+            permission_classes = [IsAdminUser]
+        return [permission() for permission in permission_classes]
 
 
 class ProductoViewSet(viewsets.ModelViewSet):
@@ -26,33 +37,26 @@ class ProductoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
-# --- NUEVA FUNCIÓN PARA EL REPORTE ---
+# --- FUNCIÓN PARA EL REPORTE ---
 
 def exportar_reporte_csv(request):
     """
     Genera un archivo CSV con el inventario actual de productos.
     """
-    # Configuramos la respuesta HTTP para que el navegador descargue un archivo
     response = HttpResponse(content_type='text/csv')
     
-    # Nombramos el archivo con la fecha actual
     fecha_actual = timezone.now().strftime('%Y-%m-%d')
     response['Content-Disposition'] = f'attachment; filename="reporte_inventario_{fecha_actual}.csv"'
 
-    # Inicializamos el escritor CSV
     writer = csv.writer(response)
     
-    # 1. Escribimos los encabezados (la primera fila)
     writer.writerow(['ID', 'Nombre', 'Categoría', 'Precio', 'Stock', 'Estado', 'Fecha Registro'])
 
-    # 2. Obtenemos todos los productos de la base de datos
     productos = Producto.objects.all().values_list(
         'id', 'nombre', 'categoria', 'precio', 'stock', 'estado', 'fecha_registro'
     )
     
-    # 3. Recorremos los productos y los escribimos fila por fila
     for producto in productos:
-        # Convertimos el True/False a un texto más legible para el reporte
         estado_texto = "Activo" if producto[5] else "Inactivo"
         
         fila = [
@@ -62,8 +66,23 @@ def exportar_reporte_csv(request):
             producto[3],
             producto[4],
             estado_texto,
-            producto[6].strftime('%Y-%m-%d %H:%M') # Formateamos la fecha
+            producto[6].strftime('%Y-%m-%d %H:%M') 
         ]
         writer.writerow(fila)
 
     return response
+
+
+# NUEVAS VISTAS PARA EL FRONTEND
+
+def dashboard_view(request):
+    """Renderiza la vista principal de resumen"""
+    return render(request, 'dashboard.html')
+
+def vista_productos(request):
+    """Renderiza la vista dedicada a la gestión de productos"""
+    return render(request, 'productos.html')
+
+def vista_usuarios(request):
+    """Renderiza la vista dedicada a la administración de usuarios"""
+    return render(request, 'usuarios.html')

@@ -5,16 +5,19 @@ from .models import Producto, Usuario
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        # Campos que vamos a mostrar/pedir
-        fields = ['id', 'username', 'email', 'password', 'first_name', 'last_name', 'is_active']
-        # Ocultamos la contraseña para que no se envíe al leer los datos
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ['id', 'username', 'email', 'password', 'first_name', 'last_name', 'is_active', 'is_superuser']
+        
+        # Le decimos a Django qué campos son opcionales o de solo escritura
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'first_name': {'required': False, 'allow_blank': True},
+            'last_name': {'required': False, 'allow_blank': True},
+            'is_superuser': {'required': False, 'default': False}
+        }
 
-    # Sobrescribimos el método create para encriptar la contraseña correctamente
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data.get('password'))
         return super().create(validated_data)
-
 
 class ProductoSerializer(serializers.ModelSerializer):
     class Meta:
