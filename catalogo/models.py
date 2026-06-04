@@ -7,8 +7,6 @@ class Usuario(AbstractUser):
     Heredar de AbstractUser ya nos proporciona campos como:
     username, password, email, first_name, last_name, is_active, etc.
     """
-    # Puedes agregar campos adicionales aquí si lo consideras necesario para el panel,
-    # por ejemplo, un rol o teléfono, pero con los de AbstractUser es suficiente para la prueba.
     
     def __str__(self):
         return self.username

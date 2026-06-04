@@ -7,7 +7,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
         model = Usuario
         fields = ['id', 'username', 'email', 'password', 'first_name', 'last_name', 'is_active', 'is_superuser']
         
-        # Le decimos a Django qué campos son opcionales o de solo escritura
         extra_kwargs = {
             'password': {'write_only': True},
             'first_name': {'required': False, 'allow_blank': True},
